@@ -1,0 +1,22 @@
+Raspberry Pi Zero W - headerless setup
+
+- insert SD card to computer
+- unmount any mounted partitions mounted from the SD card
+- write Raspbian to SD card as root
+- extract and reinsert SD card to computer
+- write additional files to SD card
+- unmount partitions 'boot' and 'rootfs' mounted from the SD card
+- put the card into the Raspberry Pi Zero W and boot it with no hardware connected
+
+Fine tuning the Raspi after starting it for the first time:
+- sudo apt-get update
+- sudo apt-get upgrade
+- execute raspi-config
+  - enable camera
+  - enable SPI
+  - enable I2C
+  - disable Bluetooth
+  - change password
+- install log2ram
+- disable power saving on WiFi: "iw dev wlan0 set power_save off"
+
