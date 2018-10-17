@@ -7,13 +7,17 @@ then
   rm -f /boot/log2ram.mk
   /log2ram/install.sh 2>&1 >> /uh.log
   echo "log2ram installed" >> /uh.log
-  echo "" >> /uh.log
+fi
 
+echo "" >> /uh.log
+echo "" >> /uh.log
+echo "" >> /uh.log
+
+if [ ! -f /boot/chown_pi ]
   echo "Changing ownership of /home/pi ." >> /uh.log
   chown -R pi:pi /home/pi >> /uh.log
-
-  echo "" >> /uh.log
-fi
+  touch /boot/chown_pi
+then
 
 echo "" >> /uh.log
 echo "" >> /uh.log
@@ -33,7 +37,7 @@ then
   if [ ! -f /boot/resized ]
   then
     echo "preparing for resizing file system while booting next time." >> /uh.log
-    cp -a /boot/cmdline_resize.txt /boot/cmdline.txt 2>&1 >> /uh.log
+    cat /boot/cmdline_resize.txt > /boot/cmdline.txt 2>&1 >> /uh.log
   
     touch /boot/resized
 

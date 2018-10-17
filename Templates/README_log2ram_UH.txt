@@ -2,3 +2,5 @@ The directory log2ram can be deleted and newly created by "git clone https://git
 
 No change was applied to the log2ram software. It is supplied as a snapshot without the directory ".git".
 
+log2ram will be installed during the first boot. No manual interference necesssary.
+

@@ -44,15 +44,17 @@ Here are the actions and the commands plus some explanation on the tasks / resul
 4) Unmounting the image: loop_mount_umnt /path/to/my/image/my.img (optional parameter)
    This unmounts the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
-   it will be used instead
+   it will be used instead.
 
 5) Writing the image to the SD card: write_raspbian.sh <image filename> <SD card device>
-   This script writes the latest image file to the SD card. The parameters 
-   are optional, so either no parameter or two.
+   This script writes the an image file to the SD card. The parameters 
+   are optional.
 
    This mounts the latest image file (according to the timestamp in file
-   in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
-   it will be used instead.
+   in the directory ${IMG_LOCATION_EDIT}) or the image file given on 
+   command line.
+
+   If you want to supply the <SD card device> then you have to supply the <image filename>, too.
 
 
 Additional Customisation

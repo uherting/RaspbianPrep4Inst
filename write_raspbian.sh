@@ -16,7 +16,10 @@ DNAME=`dirname $0`
 
 if [ $# -gt 2 ]
 then
-  echo "Usage: more than two parameters are not allowed."
+  echo "Usage: ${BNAME}.sh <image_file> <target_device>"
+  echo "       More than two parameters are not allowed."
+  echo "       Both parameters are optional."
+  echo "       If you want to supply the <target_device> then you have to supply the <image_file>, too."
   exit 1
 fi
 

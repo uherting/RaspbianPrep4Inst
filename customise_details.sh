@@ -67,19 +67,28 @@ function backupFiles() {
 
   for i in 4 3 2 1 0
   do
-echo " "
-echo "LOOP START"
+    echo " "
+    echo "INSIDE LOOP START with count=${i}"
+
     FILE_TO_WORK_ON=$(getBackupFileName ${BASE_FILENAME} ${i})
     echo "FILE_TO_WORK_ON=${FILE_TO_WORK_ON}"
 
+    # If the backup file with count of 4 exists then we simply delete it 
+    # as we want to keep a back log of 4 files only.
+    # else
+    # Determine the target file name and move (simple backup file) or
+    # copy (original file) it. The original file is saved to a file 
+    # which is created during the very first backup, so it represents the 
+    # state of the original file before customising.
     if [ $i -eq 4 ]
     then
       if [ -f ${FILE_TO_WORK_ON} ]
       then
-        echo "ACTION: rm -f ${FILE_TO_WORK_ON}"
+        echo "rm -f ${FILE_TO_WORK_ON}"
         #rm -f ${FILE_TO_WORK_ON}
       fi
     else
+      # get the number of the target file
       nextInLineNumber=$(getNextNumber $i)
       FILE_TO_WORK_MV_TGT=$(getBackupFileName ${BASE_FILENAME} ${nextInLineNumber})
       echo "FILE_TO_WORK_MV_TGT=${FILE_TO_WORK_MV_TGT}"
@@ -87,27 +96,45 @@ echo "LOOP START"
        then
         if [ $i -gt 0 ]
         then
-          echo "ACTION: mv ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
-          #mv ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+          echo "mv ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+          mv ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}
         else
-          echo "ACTION: cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
-          #cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+          echo "cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+          cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}
 
           # backup original file to a one time copy file name
           FILE_TO_WORK_MV_TGT=$(getBackupFileName ${BASE_FILENAME} -1)
           if [ ! -e ${FILE_TO_WORK_MV_TGT} ]
           then
-            echo "ACTION: cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
-            #cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+            echo "cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}"
+            cp -a ${FILE_TO_WORK_ON} ${FILE_TO_WORK_MV_TGT}
           fi
         fi
       else
           echo "ACTION: no action required"
       fi
     fi
-echo "LOOP FINISH"
+    echo "INSIDE LOOP END"
   done
   
+  return 0
+}
+
+
+function transferFilesPlusBackup() {
+  SRC_FILE=$1
+  TGT_FILE=$2
+
+  backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
+  if [ -f ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME} ]
+  then
+    echo "cat ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} > ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}"
+    cat ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} > ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+  else
+    echo "cp -a ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}"
+    cp -a ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+  fi
+
   return 0
 }
 
@@ -115,29 +142,37 @@ echo "LOOP FINISH"
 function customiseBoot() {
   ROOT_DIR_SOURCE=$1
   ROOT_DIR_TARGET=$2
-echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
-echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
-  # /config.txt
-  # /ssh 
-  echo "touch ${ROOT_DIR_TARGET}/ssh"
+  echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
+  echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
-if [ 1 -eq 1 ]
-then
-  # create tailor made files from template files in boot partition
-  for FILE_NAME in /config.txt
+  # create empty files
+  for FILE_NAME in /log2ram.mk /noresize /ssh 
   do
-    # backup existing files to make space for new content
-    #backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
-
-    # create the file from the template or otherwise ...
-    #foobar....
-
-echo ""
+    echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
+    touch ${ROOT_DIR_TARGET}/${FILE_NAME}
   done
-else
-  echo "The real customiseBoot functionality was not executed."
-fi
+
+  # transfer files in directories and files in the root dir of the boot partition
+  for DIRNAME in /config.txt /cmdline.txt /wpa_supplicant.conf /etc /home
+    if [ -d ${DIRNAME} ]
+    then
+      for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
+        transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+      done
+    else
+      FILE_NAME=${DIRNAME}
+      transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+    fi
+  done
+
+  # create wpa_supplicant.conf on the target if it is existant
+  # in the template dir as it is optional (in case one uses LAN)
+  if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+  then
+    cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${ROOT_DIR_TARGET}/wpa_supplicant.conf
+  fi
+
   return 0
 }
 
@@ -145,8 +180,8 @@ fi
 function customiseRoot() {
   ROOT_DIR_SOURCE=$1
   ROOT_DIR_TARGET=$2
-echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
-echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
+  echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
+  echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
   # create tailor made files from template files in root partition
   for FILE_NAME in /etc/hostname /etc/hosts
@@ -156,7 +191,7 @@ echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
     FILE_OUT="${ROOT_DIR_TARGET}${FILE_NAME}"
 
     # backup the file to be newly created
-    #backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
+    backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
 
     # create the file from the template
     echo " "
@@ -166,6 +201,27 @@ echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
     #sed -e "s/YYYYYY/${HOSTNAME_NEW}/g" < ${FILE_IN} > ${FILE_OUT}
     echo "sed -e \"s/YYYYYY/${HOSTNAME_NEW}/g\" < ${FILE_IN} > ${FILE_OUT}"
   done
+
+  # log2ram
+  LOG2RAM_SRC="${ROOT_DIR_SOURCE}/log2ram"
+  LOG2RAM_TGT="${ROOT_DIR_TARGET}/log2ram"
+  if [ -d ${LOG2RAM} ]
+  then
+    rm -rf ${LOG2RAM}
+  fi
+  echo "cp -a ${LOG2RAM_SRC} ${ROOT_DIR_TARGET}"
+  cp -a ${LOG2RAM_SRC} ${ROOT_DIR_TARGET}
+  echo "cat ${ROOT_DIR_SOURCE}/README_log2ram_UH.txt > ${ROOT_DIR_TARGET}"
+  cat ${ROOT_DIR_SOURCE}/README_log2ram_UH.txt > ${ROOT_DIR_TARGET}
+
+  # uh_script.sh
+  FILE_NAME="/uh_script.sh"
+  # backup the file to be newly created
+  backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
+  echo "cat ${ROOT_DIR_SOURCE}/${FILE_NAME} > ${ROOT_DIR_TARGET}/${FILE_NAME}"
+  cat ${ROOT_DIR_SOURCE}/${FILE_NAME} > ${ROOT_DIR_TARGET}/${FILE_NAME}
+  echo "chmod 700 ${ROOT_DIR_TARGET}/${FILE_NAME}"
+  chmod 700 ${ROOT_DIR_TARGET}/${FILE_NAME}
 
   return 0
 }
@@ -185,6 +241,7 @@ echo ""
 echo ""
 
 echo "Changing working dir to ${IMG_LOCATION_MOUNT}"
+OLD_PWD=`pwd`
 cd ${IMG_LOCATION_MOUNT} 2> /dev/null
 echo "We are now in the dir `pwd`."
 echo ""
@@ -229,7 +286,7 @@ do
   fi
 done
 
-cd - > /dev/null
+cd ${OLD_PWD} > /dev/null
 
 echo "Changing ownership of template files back to original setting."
 chown -Rv ${OLD_OWNER} ${TEMPLATE_LOCATION_ROOT}
