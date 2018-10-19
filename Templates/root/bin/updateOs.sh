@@ -1,1 +1,1 @@
-apt-get update && apt-get upgrade
+apt update && apt upgrade
