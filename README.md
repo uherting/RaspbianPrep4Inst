@@ -18,14 +18,41 @@ What is done
 There are a few scripts handling the entire  process. This gives you 
 control of the process if you want to add more info / skip a step etc.
 
-The supplied shell scripts are described in detail in the next section.
+What to consider
+================
+Prior to applying the customisation script you might consider the following ideas
+
+* Do I want a fully fledged desktop version of Raspbian on my Raspberry Pi?
+  There is the 
+* Do I want to log to RAM? If the file Templates/log2ram.mk exists the snapshot of 
+  log2ram (for details see https://github.com/azlux/log2ram) is installed. 
+
+  If you create the file in the boot partition on the storage card after 
+  the Raspberry Pi booted the log2ram application is installed from the 
+  directory /log2ram in the root partition at the next booting of the 
+  Raspberry Pi.
+* Shall the entire storage card be used? It might be nice to have a small 
+  footprint for testing some things. As soon as the file Templates/noresize 
+  exists, the resizing will not occur as part of the booting of the Raspberry Pi.
+
+  If you delete the file in the boot partition on the storage card after 
+  the Raspberry Pi booted the resize process will be executed on the next boot.
+
+  Please pay attention to the fact that the process of resizing the file 
+  system cannot be reversed.
+* Is the Raspberry Pi connected to the Router via WiFI_ In case you want to 
+  edit the file Templates/wpa_supplicant.conf to suit your needs (country, 
+  SSID and PSK).
+
+The files described above are created in the boot partition of the image / on the storage card. 
 
 Introduction to the shell scripts
 =================================
 
 The scripts are thought to be helper scripts for downloading, customising,
 and writing an image of the Linux distribution Raspbian to a SD card.
-
+Additional Customisation can be done through a script you supply, see 
+section "Additional Customisation" for details.
 
 Order of execution
 ------------------
@@ -52,7 +79,16 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    The partitions contained in the image file can be found in the directory 
    ${IMG_LOCATION_MOUNT}/* .
 
-3) Writing customisation to the mounted image: customise_details.sh
+3) Writing customisation to the mounted image: customise_details.sh <hostname> <wifi|nowifi>
+   This script is the heart of the project. It modifies some files 
+   contained in the image file and adds a few more. 
+
+   The parameter <hostname> is used to change the original initial 
+   hostname from "raspberrypi" to the given string.
+
+   The parameter <wifi|nowifi> is used to determine whether the file 
+   wpa_supplicant.conf containing the WiFi credentials is transferred 
+   to the boot partition.
 
 4) Unmounting the image: loop_mount_umnt /path/to/my/image/my.img (optional parameter)
    This unmounts the latest image file (according to the timestamp in file

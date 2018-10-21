@@ -93,7 +93,7 @@ function backupFiles() {
       if [ -f ${FILE_TO_WORK_ON} ]
       then
         echo "rm -f ${FILE_TO_WORK_ON}"
-        #rm -f ${FILE_TO_WORK_ON}
+        rm -f ${FILE_TO_WORK_ON}
       fi
     else
       # get the number of the target file
@@ -133,10 +133,10 @@ function transferFilesPlusBackup() {
   SRC_FILE=$1
   TGT_FILE=$2
 
-  ROOT_DIR_TARGET_DIRNAME=`dirname ${TGT_FILE}`
-  if [ -f ${ROOT_DIR_TARGET_DIRNAME} ]
+  TARGET_DIRNAME=`dirname ${TGT_FILE}`
+  if [ -f ${TARGET_DIRNAME} ]
   then
-    mkdir -p ${ROOT_DIR_TARGET_DIRNAME}
+    mkdir -p ${TARGET_DIRNAME}
   fi
 
   backupFiles ${TGT_FILE}
@@ -164,8 +164,10 @@ function customiseBoot() {
   # create empty files
   for FILE_NAME in /log2ram.mk /noresize /ssh 
   do
-    echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
-    touch ${ROOT_DIR_TARGET}/${FILE_NAME}
+    if [ -f ${ROOT_DIR_SOURCE}/${FILE_NAME} ]
+      echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
+      touch ${ROOT_DIR_TARGET}/${FILE_NAME}
+    fi
   done
 
   # transfer files in directories and files in the root dir of the boot partition

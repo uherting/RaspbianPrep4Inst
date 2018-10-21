@@ -27,7 +27,7 @@ then
   echo " "
   echo " "
   echo "Error: version expected (lite or desktop)"
-  echo "Usage ${BNAME}.sh lite | desktop
+  echo "Usage ${BNAME}.sh lite | desktop"
   exit 1
 fi
 
