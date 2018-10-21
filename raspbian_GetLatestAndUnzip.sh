@@ -23,7 +23,11 @@ fi
 
 if [ $# -lt 1 ]
 then
-  echo "version expected (lite or desktop)"
+  echo " "
+  echo " "
+  echo " "
+  echo "Error: version expected (lite or desktop)"
+  echo "Usage ${BNAME}.sh lite | desktop
   exit 1
 fi
 
@@ -37,7 +41,7 @@ if [ "${GIVEN_VERSION}" == "desktop" ]; then
 fi
 
 # delete all zip files in the current dir --- no 'old stuff' needed!
-rm *.zip* *.img*
+rm *.zip* *.img* > /dev/null
 
 # get the latest Raspbian
 # the file name will be the one the generic URL points to
@@ -59,3 +63,6 @@ mv ${FILE_NAME} ${IMG_LOCATION_DOWNLOAD_ARCHIVE}
 echo "Moving content of ${FILE_NAME} to ${IMG_LOCATION_EDIT}"
 mv *.img ${IMG_LOCATION_EDIT}
 
+echo " "
+echo " "
+echo " "

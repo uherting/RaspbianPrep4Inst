@@ -65,9 +65,12 @@ then
   #read dummy_value
 
   # mount the img file on the next available loop device and assign the name of the device to a variable
+  echo "The image file will be mounted on the following loop device:"
   dev="$(sudo losetup --show -f -P "$img")"
   echo "$dev"
+
   # loop through the partitions contained in the img file and mount them to ${IMG_LOCATION_MOUNT}/<partition_name>
+  echo "The mount points are as follows:"
   for part in "$dev"?*
   do
     if [ "$part" = "${dev}p*" ]; then

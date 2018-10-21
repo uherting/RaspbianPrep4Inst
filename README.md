@@ -27,17 +27,24 @@ Here are the actions and the commands plus some explanation on the tasks / resul
 
 1) Downloading: "sudo raspbian_GetLatest.sh <lite|desktop>"
    The latest version of Raspbian will get downloaded to the directory 
-   ${IMG_LOCATION} defined in the file mod.conf. The parameter determines
-   whether the lite (no GUI) or desktop version will be downloaded.
+   ${IMG_LOCATION_DOWNLOAD} defined in the file mod.conf. The parameter 
+   determines whether the lite (no GUI) or desktop version will be downloaded.
 
    The file name will be something like "2018-06-27-raspbian-stretch-lite.zip".
    The URL used for the retrieval is generic and so it will hopefully work
    with the next major release(s) after Raspbian Stretch.
 
+   The downloaded file will be decompressed. After being decompressed it 
+   will be moved to the ${IMG_LOCATION_DOWNLOAD_ARCHIVE} directory while 
+   the extracted file goes into the ${IMG_LOCATION_EDIT} directory.
+
 2) Mounting the image: loop_mount_mnt /path/to/my/image/my.img (optional parameter)
    This mounts the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
    it will be used instead.
+   
+   The partitions contained in the image file can be found in the directory 
+   ${IMG_LOCATION_MOUNT}/* .
 
 3) Writing customisation to the mounted image: customise_details.sh
 
