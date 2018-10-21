@@ -133,14 +133,21 @@ function transferFilesPlusBackup() {
   SRC_FILE=$1
   TGT_FILE=$2
 
-  backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
-  if [ -f ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME} ]
+  ROOT_DIR_TARGET_DIRNAME=`dirname ${TGT_FILE}`
+  if [ -f ${ROOT_DIR_TARGET_DIRNAME} ]
   then
-    echo "cat ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} > ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}"
-    cat ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} > ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+    mkdir -p ${ROOT_DIR_TARGET_DIRNAME}
+  fi
+
+  backupFiles ${TGT_FILE}
+
+  if [ -f ${TGT_FILE} ]
+  then
+    echo "cat ${SRC_FILE} > ${TGT_FILE}"
+    cat ${SRC_FILE} > ${TGT_FILE}
   else
-    echo "cp -a ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}"
-    cp -a ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+    echo "cp -a ${SRC_FILE} ${TGT_FILE}"
+    cp -a ${SRC_FILE} ${TGT_FILE}
   fi
 
   return 0
