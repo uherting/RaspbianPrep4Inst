@@ -1,13 +1,19 @@
-This project prepares a downloaded image of Raspbian by applying a 
-slight customisation to help with for headless installation onto 
-Raspberry Pi.
+This project was born out of a need to have a standard process to prepare the headless installation onto a
+Raspberry Pi. With the help of the scripts from this project an image of Raspbian can be downloaded, customised and written to a storage card. as I (and maybe you, too) like to control the process I separated the functionality into several scripts with a common configuration file.
+
+Most of Raspberry Pies I own are of the type Zero W and as I run them headlessly I used the lite version of Raspbian in the beginning for this project, but the same steps described here can be used to prepare a desktop image file.
+ 
+I strongly rely on the fine work of the Raspberry foundation whose image files I use for my customisation.
 
 What is done 
 ============
+* downloading the latest Raspbian Image
+* decompressing the image file
+* mounting the image file in order to add / modify files
 * applying a host name
-* adding WiFi credentials
+* adding WiFi credentials based on file in the Templates directory of the repository
 * enabling SSH
-* further customising by you through a custom script which is executed in case of existance
+* further customising by an optinal custom script which is executed in case of existance
 
 There are a few scripts handling the entire  process. This gives you 
 control of the process if you want to add more info / skip a step etc.
@@ -75,4 +81,8 @@ The following scripts take care of mounting / unmounting the image file.
 Attention:
 Both scripts are sym links pointing to loop_mount_main.sh. They get created
 by executing any of the scripts or explicitly by executing mod.conf.
+
+Attention
+---------
+Please be aware of the fact that the scripts assume that you have got enough space on the partition holding the directories mentioned earlier. This boils down to the downloaded file, the decompressed file and maybe the content of repository holding the scripts.
 

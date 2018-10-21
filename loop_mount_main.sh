@@ -73,7 +73,7 @@ then
   echo "The mount points are as follows:"
   for part in "$dev"?*
   do
-    if [ "$part" = "${dev}p*" ]; then
+    if [ "$part" == "${dev}p*" ]; then
       part="${dev}"
     fi
     dst="${IMG_LOCATION_MOUNT}/$(basename "$part")"
@@ -98,7 +98,7 @@ then
   # loop through the partitions presented through the loop dev and unmount them
   for part in "$dev"?*
   do
-    if [ "$part" = "${dev}p*" ]; then
+    if [ "$part" == "${dev}p*" ]; then
       part="${dev}"
     fi
     dst="${IMG_LOCATION_MOUNT}/$(basename "$part")"

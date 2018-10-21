@@ -9,25 +9,33 @@ fi
 BNAME=`basename $0 .sh`
 DNAME=`dirname $0`
 
-HOSTNAME_NEW=$1
 
 ADDITIONAL_CUSTOMISATION_SCRIPT="myVeryOwnCustScript.sh"
-
-
-#TGT_ROOT_DIR="/root/Raspi_UH/headless_install/zero"
 
 BOOT_DIR="boot"
 ROOT_DIR="rootfs"
 
+CREATE_WIFI_CREDENTIAL_FILE=1
+
 . ${DNAME}/mod.conf
 
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
   echo "hostname expected"
+  echo "Usage ${BNANE}.sh <hostname> <wifi|nowifi>"
+  EXIT_ON_ERROR=1
   exit 1
 fi
 
+if [ "$2" = "nowifi" ]
+then
+  CREATE_WIFI_CREDENTIAL_FILE=0
+fi
+
+HOSTNAME_NEW=$1
+
 FILE_TO_WORK_ON=""
+
 
 # function declaration follows
 function getNextNumber() {
@@ -166,11 +174,15 @@ function customiseBoot() {
     fi
   done
 
-  # create wpa_supplicant.conf on the target if it is existant
-  # in the template dir as it is optional (in case one uses LAN)
-  if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+  # create wpa_supplicant.conf on the target if command line parameter
+  # requires us to do so and if the file itself is existant
+  # in the template dir as it is optional in case LAN is used
+  if [ ${CREATE_WIFI_CREDENTIAL_FILE} -eq 1 ]
   then
-    cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${ROOT_DIR_TARGET}/wpa_supplicant.conf
+    if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+    then
+      cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${ROOT_DIR_TARGET}/wpa_supplicant.conf
+    fi
   fi
 
   return 0
