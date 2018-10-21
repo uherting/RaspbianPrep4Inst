@@ -14,6 +14,8 @@ fi
 BNAME=`basename $0 .sh`
 DNAME=`dirname $0`
 
+GIVEN_VERSION=$1
+
 . ${DNAME}/mod.conf
 
 # if this script was called under its real name it just creates
@@ -25,7 +27,27 @@ then
   exit 123
 fi
 
-if [ $# -gt 1 ]
+if [ $# -lt 1 ]
+then
+  echo " "
+  echo " "
+  echo " "
+  echo "Error: version expected (lite or desktop)"
+  echo "Note: the image file is an optional parameter"
+  echo "Usage ${BNAME}.sh <lite|desktop> <image_file>"
+  exit 1
+fi
+
+VERSION=""
+if [ "${GIVEN_VERSION}" == "lite" ]; then
+  VERSION="-lite"
+fi
+
+if [ "${GIVEN_VERSION}" == "desktop" ]; then
+  VERSION=""
+fi
+
+if [ $# -gt 2 ]
 then
   echo "Usage: more than one parameter is not allowed."
   exit 1
@@ -34,7 +56,8 @@ fi
 # check if given file exist 
 # if no file name was given try to take the latest
 # according to the timestamp in file in the directory ${IMG_LOCATION_EDIT}
-if [ $# -eq 1 ]
+# and the given version (lite|desktop)
+if [ $# -eq 2 ]
 then
   IMG_FILE=$1
 
@@ -45,7 +68,13 @@ then
   fi
 else
   echo "Checking for newest image file according to the timestamp in file"
-  IMG_FILE=`ls ${IMG_LOCATION_EDIT}/*.img | sort | tail -n 1`
+  if [ "${GIVEN_VERSION}" == "lite" ]; then
+    # the lite version has the special marker '-lite' in the file name
+    IMG_FILE=`ls ${IMG_LOCATION_EDIT}/*${VERSION}.img 2> /dev/null | sort | tail -n 1`
+  else
+    # the desktop version has no special marker in the file name
+    IMG_FILE=`ls ${IMG_LOCATION_EDIT}/*${VERSION}.img 2> /dev/null | grep -v lite | sort | tail -n 1`
+  fi
 
   if [ ! -f ${IMG_FILE} ]
   then

@@ -1,18 +1,19 @@
-This project was born out of a need to have a standard process to prepare the headless installation onto a
-Raspberry Pi. With the help of the scripts from this project an image of Raspbian can be downloaded, customised and written to a storage card. as I (and maybe you, too) like to control the process I separated the functionality into several scripts with a common configuration file.
+This project was born out of a need to have a standard process to prepare the headless installation onto a Raspberry Pi. With the help of the scripts from this project an image of Raspbian can be downloaded, customised and written to a storage card. as I (and maybe you, too) like to control the process I separated the functionality into several scripts with a common configuration file. 
 
 Most of Raspberry Pies I own are of the type Zero W and as I run them headlessly I used the lite version of Raspbian in the beginning for this project, but the same steps described here can be used to prepare a desktop image file.
  
-I strongly rely on the fine work of the Raspberry foundation whose image files I use for my customisation.
+I strongly rely on the fine work of the Raspberry foundation (https://www.raspberrypi.org) whose image files I use for my customisation. See https://www.raspberrypi.org/downloads/raspbian/ for details on the distribution.
 
 What is done 
 ============
 * downloading the latest Raspbian Image
 * decompressing the image file
 * mounting the image file in order to add / modify files
-* applying a host name
-* adding WiFi credentials based on file in the Templates directory of the repository
-* enabling SSH
+* customisation
+  - applying a host name
+  - adding WiFi credentials based on file in the Templates directory of the repository if requested
+  - enabling SSH
+  - 
 * further customising by an optinal custom script which is executed in case of existance
 
 There are a few scripts handling the entire  process. This gives you 
@@ -44,7 +45,8 @@ Prior to applying the customisation script you might consider the following idea
   edit the file Templates/wpa_supplicant.conf to suit your needs (country, 
   SSID and PSK).
 
-The files described above are created in the boot partition of the image / on the storage card. 
+The files described above are created in the boot partition of the image by 
+means are written later onto the storage card. 
 
 Introduction to the shell scripts
 =================================

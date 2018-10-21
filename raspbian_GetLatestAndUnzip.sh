@@ -41,7 +41,7 @@ if [ "${GIVEN_VERSION}" == "desktop" ]; then
 fi
 
 # delete all zip files in the current dir --- no 'old stuff' needed!
-rm *.zip* *.img* > /dev/null
+rm *.zip* *.img* 2> /dev/null
 
 # get the latest Raspbian
 # the file name will be the one the generic URL points to

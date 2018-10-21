@@ -171,8 +171,8 @@ function customiseBoot() {
   done
 
   # transfer files in directories and files in the root dir of the boot partition
-  for DIRNAME in /config.txt /cmdline.txt /wpa_supplicant.conf /etc /home
-    if [ -d ${DIRNAME} ]
+  for DIRNAME in /config.txt /cmdline.txt
+    if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
       for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
         transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
@@ -186,11 +186,22 @@ function customiseBoot() {
   # create wpa_supplicant.conf on the target if command line parameter
   # requires us to do so and if the file itself is existant
   # in the template dir as it is optional in case LAN is used
+  TGT=${ROOT_DIR_TARGET}/wpa_supplicant.conf
   if [ ${CREATE_WIFI_CREDENTIAL_FILE} -eq 1 ]
   then
-    if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+    if [ -f ${TGT} ]
     then
-      cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${ROOT_DIR_TARGET}/wpa_supplicant.conf
+      backupFiles ${TGT}
+    fi
+    if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+      echo "cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${TGT}"
+      cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${TGT}
+    fi
+  else 
+    if [ -f ${TGT} ]
+    then
+      echo "no WiFi setup requested. Action: rm -f ${TGT}"
+      rm -f ${TGT}
     fi
   fi
 
@@ -223,11 +234,25 @@ function customiseRoot() {
     echo "sed -e \"s/YYYYYY/${HOSTNAME_NEW}/g\" < ${FILE_IN} > ${FILE_OUT}"
   done
 
+  # transfer files in directories and files in the root dir of the root partition
+  for DIRNAME in /etc /home /root
+    if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
+    then
+      for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
+        transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+      done
+    else
+      FILE_NAME=${DIRNAME}
+      transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+    fi
+  done
+
   # log2ram
   LOG2RAM_SRC="${ROOT_DIR_SOURCE}/log2ram"
   LOG2RAM_TGT="${ROOT_DIR_TARGET}/log2ram"
   if [ -d ${LOG2RAM} ]
   then
+    echo "rm -rf ${LOG2RAM}"
     rm -rf ${LOG2RAM}
   fi
   echo "cp -a ${LOG2RAM_SRC} ${ROOT_DIR_TARGET}"
