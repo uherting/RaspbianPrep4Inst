@@ -48,6 +48,21 @@ Prior to applying the customisation script you might consider the following idea
 The files described above are created in the boot partition of the image by 
 means are written later onto the storage card. 
 
+How to get started
+==================
+
+First think whether the partition which is mounted on / holds sufficient space for the downloaded image (lite:360MB / desktop:1365MB) and the decompressed image file (lite:1780MB / desktop:3944MB). If this is an issue you might consider to create a directory on an appropriate partition and make /root/Raspi a symlink to it.
+
+How to setup 
+* sudo -i (become root)
+* two options here
+  - mkdir /root/Raspi (create the directory where everything will take place if there is enough space on the partition holding /root)
+  - otherwise consider to create a directory on an appropriate partition and make /root/Raspi a symlink to it
+* cd /root/Raspi (change working directory to where everything will take place)
+* git clone https://github.com/uherting/RaspbianPrep4Inst.git (fetch the content of this repositority)
+
+Now the environment is prepared. 
+
 Introduction to the shell scripts
 =================================
 
@@ -122,5 +137,10 @@ by executing any of the scripts or explicitly by executing mod.conf.
 
 Attention
 ---------
-Please be aware of the fact that the scripts assume that you have got enough space on the partition holding the directories mentioned earlier. This boils down to the downloaded file, the decompressed file and maybe the content of repository holding the scripts.
+* Please be aware of the fact that the scripts assume that you have got 
+  enough space on the partition holding the directories mentioned 
+  earlier. This boils down to the downloaded file, the decompressed file 
+  and maybe the content of repository holding the scripts.
 
+* The scripts are to be executed by root due to the nature of mounting / 
+  writting to devices. Please be aware of this.
