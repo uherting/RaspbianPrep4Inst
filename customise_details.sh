@@ -9,30 +9,25 @@ fi
 BNAME=`basename $0 .sh`
 DNAME=`dirname $0`
 
-
 ADDITIONAL_CUSTOMISATION_SCRIPT="myVeryOwnCustScript.sh"
 
 BOOT_DIR="boot"
 ROOT_DIR="rootfs"
 
-CREATE_WIFI_CREDENTIAL_FILE=1
-
 . ${DNAME}/mod.conf
 
 if [ $# -lt 2 ]
 then
-  echo "hostname expected"
   echo "Usage ${BNANE}.sh <hostname> <wifi|nowifi>"
-  EXIT_ON_ERROR=1
   exit 1
 fi
 
+HOSTNAME_NEW=$1
+CREATE_WIFI_CREDENTIAL_FILE=1
 if [ "$2" = "nowifi" ]
 then
   CREATE_WIFI_CREDENTIAL_FILE=0
 fi
-
-HOSTNAME_NEW=$1
 
 FILE_TO_WORK_ON=""
 
@@ -76,7 +71,7 @@ function backupFiles() {
   for i in 4 3 2 1 0
   do
     echo " "
-    echo "INSIDE LOOP START with count=${i}"
+    echo "INSIDE BACKUP LOOP START with count=${i}"
 
     FILE_TO_WORK_ON=$(getBackupFileName ${BASE_FILENAME} ${i})
     echo "FILE_TO_WORK_ON=${FILE_TO_WORK_ON}"
@@ -94,6 +89,8 @@ function backupFiles() {
       then
         echo "rm -f ${FILE_TO_WORK_ON}"
         rm -f ${FILE_TO_WORK_ON}
+      else
+        echo "ACTION: no action required as file does not exist."
       fi
     else
       # get the number of the target file
@@ -122,7 +119,7 @@ function backupFiles() {
           echo "ACTION: no action required"
       fi
     fi
-    echo "INSIDE LOOP END"
+    echo "INSIDE BACKUP LOOP END"
   done
   
   return 0
@@ -146,10 +143,10 @@ function transferFilesPlusBackup() {
   # write the file using different methods for existing / none existing files
   if [ -f ${TGT_FILE} ]
   then
-    echo "cat ${SRC_FILE} > ${TGT_FILE}"
+    echo "Create new content with: cat ${SRC_FILE} > ${TGT_FILE}"
     cat ${SRC_FILE} > ${TGT_FILE}
   else
-    echo "cp -a ${SRC_FILE} ${TGT_FILE}"
+    echo "Create new content with: cp -a ${SRC_FILE} ${TGT_FILE}"
     cp -a ${SRC_FILE} ${TGT_FILE}
   fi
 
@@ -168,6 +165,7 @@ function customiseBoot() {
   for FILE_NAME in /log2ram.mk /noresize /ssh 
   do
     if [ -f ${ROOT_DIR_SOURCE}/${FILE_NAME} ]
+    then
       echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
       touch ${ROOT_DIR_TARGET}/${FILE_NAME}
     fi
@@ -175,9 +173,11 @@ function customiseBoot() {
 
   # transfer files in directories and files in the root dir of the boot partition
   for DIRNAME in /config.txt /cmdline.txt
+  do
     if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
       for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
+      do
         transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
       done
     else
@@ -192,17 +192,15 @@ function customiseBoot() {
   TGT=${ROOT_DIR_TARGET}/wpa_supplicant.conf
   if [ ${CREATE_WIFI_CREDENTIAL_FILE} -eq 1 ]
   then
-    if [ -f ${TGT} ]
-    then
+    if [ -f ${TGT} ]; then
       backupFiles ${TGT}
     fi
-    if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]
+    if [ -f ${ROOT_DIR_SOURCE}/wpa_supplicant.conf ]; then
       echo "cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${TGT}"
       cat ${ROOT_DIR_SOURCE}/wpa_supplicant.conf > ${TGT}
     fi
   else 
-    if [ -f ${TGT} ]
-    then
+    if [ -f ${TGT} ]; then
       echo "no WiFi setup requested. Action: rm -f ${TGT}"
       rm -f ${TGT}
     fi
@@ -240,9 +238,11 @@ function customiseRoot() {
 
   # transfer files in directories and files in the root dir of the root partition
   for DIRNAME in /etc /home /root
+  do
     if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
       for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
+      do
         transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
       done
     else
