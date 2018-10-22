@@ -90,7 +90,7 @@ function backupFiles() {
         echo "rm -f ${FILE_TO_WORK_ON}"
         rm -f ${FILE_TO_WORK_ON}
       else
-        echo "ACTION: no action required as file does not exist."
+        echo "ACTION: no action required as file does not exist (#${i})."
       fi
     else
       # get the number of the target file
@@ -116,7 +116,7 @@ function backupFiles() {
           fi
         fi
       else
-          echo "ACTION: no action required"
+        echo "ACTION: no action required as file does not exist (#${i})."
       fi
     fi
     echo "INSIDE BACKUP LOOP END"
@@ -254,24 +254,31 @@ function customiseRoot() {
   # log2ram
   LOG2RAM_SRC="${ROOT_DIR_SOURCE}/log2ram"
   LOG2RAM_TGT="${ROOT_DIR_TARGET}/log2ram"
-  if [ -d ${LOG2RAM} ]
+  if [ -d ${LOG2RAM_TGT} ]
   then
-    echo "rm -rf ${LOG2RAM}"
-    rm -rf ${LOG2RAM}
+    echo "rm -rf ${LOG2RAM_TGT}"
+    rm -rf ${LOG2RAM_TGT}
   fi
+
   echo "cp -a ${LOG2RAM_SRC} ${ROOT_DIR_TARGET}"
   cp -a ${LOG2RAM_SRC} ${ROOT_DIR_TARGET}
   echo "cat ${ROOT_DIR_SOURCE}/README_log2ram_UH.txt > ${ROOT_DIR_TARGET}"
-  cat ${ROOT_DIR_SOURCE}/README_log2ram_UH.txt > ${ROOT_DIR_TARGET}
+
+  # README_log2ram_UH.txt
+  FILE_NAME="/README_log2ram_UH.txt"
+  backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
+  echo "cat ${ROOT_DIR_SOURCE}/${FILE_NAME} > ${ROOT_DIR_TARGET}/${FILE_NAME}"
+  cat ${ROOT_DIR_SOURCE}${FILE_NAME} > ${ROOT_DIR_TARGET}${FILE_NAME}
+  echo "chmod 600 ${ROOT_DIR_TARGET}${FILE_NAME}"
+  chmod 600 ${ROOT_DIR_TARGET}${FILE_NAME}
 
   # uh_script.sh
   FILE_NAME="/uh_script.sh"
-  # backup the file to be newly created
   backupFiles ${ROOT_DIR_TARGET}${FILE_NAME}
   echo "cat ${ROOT_DIR_SOURCE}/${FILE_NAME} > ${ROOT_DIR_TARGET}/${FILE_NAME}"
-  cat ${ROOT_DIR_SOURCE}/${FILE_NAME} > ${ROOT_DIR_TARGET}/${FILE_NAME}
-  echo "chmod 700 ${ROOT_DIR_TARGET}/${FILE_NAME}"
-  chmod 700 ${ROOT_DIR_TARGET}/${FILE_NAME}
+  cat ${ROOT_DIR_SOURCE}${FILE_NAME} > ${ROOT_DIR_TARGET}${FILE_NAME}
+  echo "chmod 700 ${ROOT_DIR_TARGET}${FILE_NAME}"
+  chmod 700 ${ROOT_DIR_TARGET}${FILE_NAME}
 
   return 0
 }
