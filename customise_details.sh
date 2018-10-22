@@ -133,14 +133,17 @@ function transferFilesPlusBackup() {
   SRC_FILE=$1
   TGT_FILE=$2
 
+  # create none existing target dir
   TARGET_DIRNAME=`dirname ${TGT_FILE}`
-  if [ -f ${TARGET_DIRNAME} ]
+  if [ ! -f ${TARGET_DIRNAME} ]
   then
     mkdir -p ${TARGET_DIRNAME}
   fi
 
+  # do a backup
   backupFiles ${TGT_FILE}
 
+  # write the file using different methods for existing / none existing files
   if [ -f ${TGT_FILE} ]
   then
     echo "cat ${SRC_FILE} > ${TGT_FILE}"
@@ -175,11 +178,11 @@ function customiseBoot() {
     if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
       for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
-        transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+        transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
       done
     else
       FILE_NAME=${DIRNAME}
-      transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+      transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
     fi
   done
 
@@ -212,6 +215,7 @@ function customiseBoot() {
 function customiseRoot() {
   ROOT_DIR_SOURCE=$1
   ROOT_DIR_TARGET=$2
+
   echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
   echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
@@ -239,11 +243,11 @@ function customiseRoot() {
     if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
       for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
-        transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+        transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
       done
     else
       FILE_NAME=${DIRNAME}
-      transferFilesPlusBackup ${ROOT_DIR_TARGET}${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+      transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
     fi
   done
 
