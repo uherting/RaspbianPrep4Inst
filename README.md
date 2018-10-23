@@ -1,6 +1,8 @@
-This project was born out of a need to have a standard process to prepare the headless installation onto a Raspberry Pi. With the help of the scripts from this project an image of Raspbian can be downloaded, customised and written to a storage card. as I (and maybe you, too) like to control the process I separated the functionality into several scripts with a common configuration file. 
+About this project
+==================
+This project was born out of a need to have a standard process to prepare the headless installation of Raspbian Stretch onto a Raspberry Pi. With the help of the scripts from this project an image of Raspbian can be downloaded, customised and written to a storage card. as I (and maybe you, too) like to control the process I separated the functionality into several scripts with a common configuration file. Even a custom script (maybe yours?) can be executed from the custimisation script.
 
-Most of Raspberry Pies I own are of the type Zero W and as I run them headlessly I used the lite version of Raspbian in the beginning for this project, but the same steps described here can be used to prepare a desktop image file.
+Most of Raspberry Pies I own are of the type Zero W and as I run them headlessly I used the lite version of Raspbian in the beginning for this project, but the same steps described here can be used to prepare a desktop image file. You will find scripts who ask for lite or desktop to address this.
  
 I strongly rely on the fine work of the Raspberry foundation (https://www.raspberrypi.org) whose image files I use for my customisation. See https://www.raspberrypi.org/downloads/raspbian/ for details on the distribution.
 
