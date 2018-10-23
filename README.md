@@ -107,7 +107,15 @@ Here are the actions and the commands plus some explanation on the tasks / resul
 
    The parameter <wifi|nowifi> is used to determine whether the file 
    wpa_supplicant.conf containing the WiFi credentials is transferred 
-   to the boot partition.
+   to the boot partition. The file wpa_supplicant.conf has to be created
+   in the directory 'Templates' which is a subdirectory of the location 
+   where the scripts are located. You may copy the file 
+   wpa_supplicant.conf and edit it according to your needs.
+
+   An addtional customisation script called 'customise_details_additional' 
+   can be supplied by you in order to apply your very own customisation.
+   The script is executed in the context of the script 'customise_details.sh'
+   and does not need any execute rights set.
 
 4) Unmounting the image: loop_mount_umnt /path/to/my/image/my.img (optional parameter)
    This unmounts the latest image file (according to the timestamp in file
@@ -117,6 +125,10 @@ Here are the actions and the commands plus some explanation on the tasks / resul
 5) Writing the image to the SD card: write_raspbian.sh <image filename> <SD card device>
    This script writes the an image file to the SD card. The parameters 
    are optional.
+
+   Please bear in mind that none of the partitions should be mounted for 
+   any reason before executing this script. You may have to unmount the 
+   partitions manually.
 
    This mounts the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}) or the image file given on 
@@ -133,6 +145,7 @@ done prior to writing the image to a SD card.
 The following scripts take care of mounting / unmounting the image file.
  - Mounting the image: loop_mount_mnt.sh <filenameOfRaspbianImage>
  - Unmounting the image: loop_mount_umnt.sh <filenameOfRaspbianImage>
+
 Attention:
 Both scripts are sym links pointing to loop_mount_main.sh. They get created
 by executing any of the scripts or explicitly by executing mod.conf.
@@ -146,3 +159,4 @@ Attention
 
 * The scripts are to be executed by root due to the nature of mounting / 
   writting to devices. Please be aware of this.
+

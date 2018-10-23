@@ -9,7 +9,7 @@ fi
 BNAME=`basename $0 .sh`
 DNAME=`dirname $0`
 
-ADDITIONAL_CUSTOMISATION_SCRIPT="myVeryOwnCustScript.sh"
+ADDITIONAL_CUSTOMISATION_SCRIPT="customise_details_additional.sh"
 
 BOOT_DIR="boot"
 ROOT_DIR="rootfs"
@@ -134,6 +134,7 @@ function transferFilesPlusBackup() {
   TARGET_DIRNAME=`dirname ${TGT_FILE}`
   if [ ! -f ${TARGET_DIRNAME} ]
   then
+    echo "Create new with : mkdir -p ${TARGET_DIRNAME}"
     mkdir -p ${TARGET_DIRNAME}
   fi
 
@@ -161,16 +162,6 @@ function customiseBoot() {
   echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
   echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
-  # create empty files
-  for FILE_NAME in /log2ram.mk /noresize /ssh 
-  do
-    if [ -f ${ROOT_DIR_SOURCE}/${FILE_NAME} ]
-    then
-      echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
-      touch ${ROOT_DIR_TARGET}/${FILE_NAME}
-    fi
-  done
-
   # transfer files in directories and files in the root dir of the boot partition
   for DIRNAME in /config.txt /cmdline.txt
   do
@@ -183,6 +174,16 @@ function customiseBoot() {
     else
       FILE_NAME=${DIRNAME}
       transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
+    fi
+  done
+
+  # create empty files
+  for FILE_NAME in /log2ram.mk /noresize /ssh 
+  do
+    if [ -f ${ROOT_DIR_SOURCE}/${FILE_NAME} ]
+    then
+      echo "touch ${ROOT_DIR_TARGET}/${FILE_NAME}"
+      touch ${ROOT_DIR_TARGET}/${FILE_NAME}
     fi
   done
 
@@ -217,6 +218,21 @@ function customiseRoot() {
   echo "ROOT_DIR_SOURCE = ${ROOT_DIR_SOURCE}"
   echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
+  # transfer files in directories and files in the root dir of the root partition
+  for DIRNAME in /etc /home /root
+  do
+    if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
+    then
+      for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
+      do
+        transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
+      done
+    else
+      FILE_NAME=${DIRNAME}
+      transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
+    fi
+  done
+
   # create tailor made files from template files in root partition
   for FILE_NAME in /etc/hostname /etc/hosts
   do
@@ -232,23 +248,8 @@ function customiseRoot() {
     echo "creating ${FILE_OUT} from template ${FILE_IN}"
     echo "TEMPLATE: ${FILE_IN}"
     echo "FILE_OUT: ${FILE_OUT}"
-    #sed -e "s/YYYYYY/${HOSTNAME_NEW}/g" < ${FILE_IN} > ${FILE_OUT}
     echo "sed -e \"s/YYYYYY/${HOSTNAME_NEW}/g\" < ${FILE_IN} > ${FILE_OUT}"
-  done
-
-  # transfer files in directories and files in the root dir of the root partition
-  for DIRNAME in /etc /home /root
-  do
-    if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
-    then
-      for FILE_NAME in `cd ${ROOT_DIR_SOURCE}${DIRNAME};find . -type f;cd - > /dev/null`
-      do
-        transferFilesPlusBackup ${ROOT_DIR_SOURCE}${DIRNAME}/${FILE_NAME} ${ROOT_DIR_TARGET}${DIRNAME}/${FILE_NAME}
-      done
-    else
-      FILE_NAME=${DIRNAME}
-      transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
-    fi
+    sed -e "s/YYYYYY/${HOSTNAME_NEW}/g" < ${FILE_IN} > ${FILE_OUT}
   done
 
   # log2ram
@@ -355,7 +356,7 @@ exit 0
 if [ -x ${ADDITIONAL_CUSTOMISATION_SCRIPT} ]
 then
  echo "trying to execute additional customisation script"
- ${ADDITIONAL_CUSTOMISATION_SCRIPT}
+ . ${DNAME}/${ADDITIONAL_CUSTOMISATION_SCRIPT}
  ADDITIONAL_CUSTOMISATION_EXIT_CODE=$?
  if [ ${ADDITIONAL_CUSTOMISATION_EXIT_CODE} -ne 0 ]
  then
