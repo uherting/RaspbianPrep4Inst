@@ -17,9 +17,9 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-UH_SCRIPT_IN_ROOT_DIR="uh_script.sh"
-if [ -x /${UH_SCRIPT_IN_ROOT_DIR} ]; then
-  /${UH_SCRIPT_IN_ROOT_DIR}
+UH_SCRIPT_IN_ROOT_DIR="/uh_script.sh"
+if [ -x ${UH_SCRIPT_IN_ROOT_DIR} ]; then
+  . ${UH_SCRIPT_IN_ROOT_DIR}
 fi
 
 exit 0

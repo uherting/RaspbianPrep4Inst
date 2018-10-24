@@ -163,7 +163,7 @@ function customiseBoot() {
   echo "ROOT_DIR_TARGET = ${ROOT_DIR_TARGET}"
 
   # transfer files in directories and files in the root dir of the boot partition
-  for DIRNAME in /config.txt /cmdline.txt
+  for DIRNAME in /config.txt /cmdline.txt /cmdline_resize.txt /cmdline_normal.txt
   do
     if [ -d ${ROOT_DIR_SOURCE}${DIRNAME} ]
     then
