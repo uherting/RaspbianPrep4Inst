@@ -60,7 +60,7 @@ echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
 #read dummy_value
 
 echo "start at `date`"
-time sudo dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
+time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
 sync
 echo "finished at `date`"
 
