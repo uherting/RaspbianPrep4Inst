@@ -54,3 +54,5 @@ dtparam=spi=on
 
 # Enable audio (loads snd_bcm2835)
 dtparam=audio=on
+
+disable_camera_led=1
