@@ -22,6 +22,12 @@ then
   exit 1
 fi
 
+if [ $# -gt 2 ]
+then
+  echo "Usage ${BNANE}.sh <hostname> <wifi|nowifi>"
+  exit 1
+fi
+
 HOSTNAME_NEW=$1
 CREATE_WIFI_CREDENTIAL_FILE=1
 if [ "$2" = "nowifi" ]

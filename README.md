@@ -26,14 +26,16 @@ What to consider
 Prior to applying the customisation script you might consider the following ideas
 
 * Do I want a fully fledged desktop version of Raspbian on my Raspberry Pi?
-  There is the 
+  There is the desktop and the lite image to select from.
+
 * Do I want to log to RAM? If the file Templates/log2ram.mk exists the snapshot of 
   log2ram (for details see https://github.com/azlux/log2ram) is installed. 
 
-  If you create the file in the boot partition on the storage card after 
-  the Raspberry Pi booted the log2ram application is installed from the 
-  directory /log2ram in the root partition at the next booting of the 
-  Raspberry Pi.
+  If you create the file log2ram.mk in the boot partition on the storage card 
+  after booting the OS the log2ram application is installed from the 
+  directory /log2ram in the root partition ready to be used after the next booting
+  of the Raspberry Pi.
+
 * Shall the entire storage card be used? It might be nice to have a small 
   footprint for testing some things. As soon as the file Templates/noresize 
   exists, the resizing will not occur as part of the booting of the Raspberry Pi.
@@ -43,8 +45,10 @@ Prior to applying the customisation script you might consider the following idea
 
   Please pay attention to the fact that the process of resizing the file 
   system cannot be reversed.
-* Is the Raspberry Pi connected to the Router via WiFI_ In case you want to 
-  edit the file Templates/wpa_supplicant.conf to suit your needs (country, 
+
+* Is the Raspberry Pi connected to the Router via WiFI? In case you want to 
+  create the file Templates/wpa_supplicant.conf using the template 
+  Templates/wpa_supplicant.conf_example to suit your needs (country, 
   SSID and PSK).
 
 The files described above are created in the boot partition of the image by 
@@ -83,14 +87,16 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    determines whether the lite (no GUI) or desktop version will be downloaded.
 
    The file name will be something like "2018-06-27-raspbian-stretch-lite.zip".
-   The URL used for the retrieval is generic and so it will hopefully work
+   The URL used for the retrieval is generic and so it will - hopefully - work
    with the next major release(s) after Raspbian Stretch.
 
    The downloaded file will be decompressed. After being decompressed it 
    will be moved to the ${IMG_LOCATION_DOWNLOAD_ARCHIVE} directory while 
    the extracted file goes into the ${IMG_LOCATION_EDIT} directory.
 
-2) Mounting the image: loop_mount_mnt /path/to/my/image/my.img (optional parameter)
+2) Mounting the image: "loop_mount_mnt <lite|desktop> <image_file>" 
+   (the image file name is optional)
+
    This mounts the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
    it will be used instead.
@@ -117,12 +123,15 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    The script is executed in the context of the script 'customise_details.sh'
    and does not need any execute rights set.
 
-4) Unmounting the image: loop_mount_umnt /path/to/my/image/my.img (optional parameter)
+4) Unmounting the image: "loop_mount_umnt <lite|desktop> <image_file>" 
+   (the image file name is optional)
+
    This unmounts the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
    it will be used instead.
 
-5) Writing the image to the SD card: write_raspbian.sh <image filename> <SD card device>
+5) Writing the image to the SD card: "write_raspbian.sh <image filename> <SD card device>"
+
    This script writes the an image file to the SD card. The parameters 
    are optional.
 
@@ -134,7 +143,8 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    in the directory ${IMG_LOCATION_EDIT}) or the image file given on 
    command line.
 
-   If you want to supply the <SD card device> then you have to supply the <image filename>, too.
+   If you want to supply the <SD card device> then you have to supply 
+   the <image filename>, too.
 
 
 Additional Customisation
