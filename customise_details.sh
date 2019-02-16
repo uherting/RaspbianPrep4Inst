@@ -300,7 +300,7 @@ function customiseRoot() {
 #
 echo "Changing ownership of template files to root."
 OLD_OWNER=`ls -l ${TEMPLATE_LOCATION_ROOT} | tail -n1 | cut -f 3-4 -d " " | tr " " ":"`
-chown -Rv root:root ${TEMPLATE_LOCATION_ROOT}
+chown -Rv root:root ${TEMPLATE_LOCATION_ROOT} > /dev/null
 echo ""
 echo ""
 
@@ -353,7 +353,7 @@ done
 cd ${OLD_PWD} > /dev/null
 
 echo "Changing ownership of template files back to original setting."
-chown -Rv ${OLD_OWNER} ${TEMPLATE_LOCATION_ROOT}
+chown -Rv ${OLD_OWNER} ${TEMPLATE_LOCATION_ROOT} > /dev/null
 echo ""
 echo ""
 
