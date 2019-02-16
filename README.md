@@ -94,7 +94,7 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    will be moved to the ${IMG_LOCATION_DOWNLOAD_ARCHIVE} directory while 
    the extracted file goes into the ${IMG_LOCATION_EDIT} directory.
 
-2) Mounting the image: "./loop_mount_mnt <lite|desktop> <image_file>" 
+2) Mounting the image: "./loop_mount_mnt.sh <lite|desktop> <image_file>" 
    (the image file name is optional)
 
    This mounts the latest image file (according to the timestamp in file
@@ -123,7 +123,7 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    The script is executed in the context of the script 'customise_details.sh'
    and does not need any execute rights set.
 
-4) Unmounting the image: "./loop_mount_umnt <lite|desktop> <image_file>" 
+4) Unmounting the image: "./loop_mount_umnt.sh <lite|desktop> <image_file>" 
    (the image file name is optional)
 
    This unmounts the latest image file (according to the timestamp in file
@@ -146,6 +146,12 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    Note: If you want to supply the <SD card device> then you have to 
    supply the <image filename>, too.
 
+Example of a run:
+ ./raspbian_GetLatest.sh lite
+ ./loop_mount_mnt.sh lite
+ ./customise_details.sh pizc141 wifi
+ ./loop_mount_umnt.sh lite
+ ./write_raspbian.sh 
 
 Additional Customisation
 ------------------------

@@ -14,6 +14,8 @@ ADDITIONAL_CUSTOMISATION_SCRIPT="customise_details_additional.sh"
 BOOT_DIR="boot"
 ROOT_DIR="rootfs"
 
+BACKUP_PREFIX="_UH.orgFile"
+
 . ${DNAME}/mod.conf
 
 if [ $# -lt 2 ]
@@ -59,7 +61,7 @@ function getBackupFileName () {
   # backup original file to a one time copy file name
   if [ $2 -eq -1 ]
   then
-    PREFIX="_UH.orgFile"
+    PREFIX=${BACKUP_PREFIX}
   fi
 
   echo "${BASE_FILENAME_BAK}${PREFIX}"
@@ -180,6 +182,28 @@ function customiseBoot() {
     else
       FILE_NAME=${DIRNAME}
       transferFilesPlusBackup ${ROOT_DIR_SOURCE}${FILE_NAME} ${ROOT_DIR_TARGET}${FILE_NAME}
+    fi
+  done
+
+  # get the new PARTUUID from the image
+  NEW_PARTUUID_FILE="${ROOT_DIR_TARGET}/cmdline.txt${BACKUP_PREFIX}"
+  NEW_PARTUUID=""
+  echo "NEW_PARTUUID_FILE = ${NEW_PARTUUID_FILE}"
+
+  if [ -f ${NEW_PARTUUID_FILE} ]; then
+    NEW_PARTUUID=`cat ${NEW_PARTUUID_FILE} | sed -e "s/ /\n/g" | grep root=PARTUUID= | cut -f 3 -d "="`
+    echo "NEW_PARTUUID_FILE found"
+  fi
+
+  echo "NEW_PARTUUID = ${NEW_PARTUUID}"
+
+  # correct the PARTUUID in /cmdline.txt /cmdline_resize.txt /cmdline_normal.txt
+  for FILE in /cmdline.txt /cmdline_resize.txt /cmdline_normal.txt
+  do
+    if [ -f ${ROOT_DIR_TARGET}${FILE} ]; then
+cat ${ROOT_DIR_TARGET}${FILE}
+      sed --in-place -e "s/XXXXXXXX-XX/${NEW_PARTUUID}/g" ${ROOT_DIR_TARGET}${FILE}
+      echo "changed ${ROOT_DIR_TARGET}${FILE} with sed for NEW_PARTUUID"
     fi
   done
 
