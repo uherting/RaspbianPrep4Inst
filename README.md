@@ -81,7 +81,7 @@ Order of execution
 ------------------
 Here are the actions and the commands plus some explanation on the tasks / results.
 
-1) Downloading: "sudo raspbian_GetLatest.sh <lite|desktop>"
+1) Downloading: "./raspbian_GetLatest.sh <lite|desktop>"
    The latest version of Raspbian will get downloaded to the directory 
    ${IMG_LOCATION_DOWNLOAD} defined in the file mod.conf. The parameter 
    determines whether the lite (no GUI) or desktop version will be downloaded.
