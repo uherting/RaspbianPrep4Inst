@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-date >  /beenhere.txt
+echo "The last booting occured at `date`" > /uh.log
 
 if [ -f /boot/log2ram.mk ]
 then
@@ -9,16 +9,15 @@ then
   echo "log2ram installed" >> /uh.log
 fi
 
-echo "" > /uh.log
 echo "" >> /uh.log
 echo "" >> /uh.log
 
-if [ ! -f /boot/chown_pi ]
+if [ ! -f /boot/chown_pi_done ]
 then
   echo "Changing ownership of /home/pi ." >> /uh.log
   chown -R pi:pi /home/pi >> /uh.log
   touch /boot/chown_pi_done
-
+fi
 
 echo "" >> /uh.log
 echo "" >> /uh.log
@@ -48,5 +47,4 @@ then
     fi
   fi
 fi
-
 

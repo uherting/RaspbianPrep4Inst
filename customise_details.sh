@@ -208,7 +208,7 @@ cat ${ROOT_DIR_TARGET}${FILE}
   done
 
   # create empty files
-  for FILE_NAME in /log2ram.mk /noresize /ssh 
+  for FILE_NAME in /log2ram.mk /noresize /ssh
   do
     if [ -f ${ROOT_DIR_SOURCE}/${FILE_NAME} ]
     then
