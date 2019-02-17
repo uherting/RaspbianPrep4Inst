@@ -83,11 +83,11 @@ else
   fi
 fi
 
-echo "Using image file ${IMG_FILE} for loop mounting."
-
 # mount the image and its containing partitions
 if [ "${BNAME}" == "loop_mount_mnt" ]
 then
+  echo "Using image file ${IMG_FILE} for loop mounting."
+
   img=`readlink -f ${IMG_FILE}`
   #echo "The given file name of the image points to ${img}. If this is not correct please push CTRL-c."
   #echo "Otherwise push ENTER to continue."
@@ -116,6 +116,8 @@ fi
 # unmount the image and its containing partitions
 if [ "${BNAME}" == "loop_mount_umnt" ]
 then
+  echo "Using image file ${IMG_FILE} for loop unmounting."
+
   img=`readlink -f ${IMG_FILE}`
   #echo "The given file name of the image points to ${img}. If this is not correct please push CTRL-c."
   #echo "Otherwise push ENTER to continue."
