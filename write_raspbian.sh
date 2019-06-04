@@ -52,20 +52,26 @@ else
   fi
 fi
 
+if [ -e ${DEVICE_WR} ]; then
+  echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
+  #echo "In case this is not the image you want to be written or"
+  #echo "the intended target device please push CTRL-c to stop the process"
+  #echo "Otherwise push ENTER to start writing the image file ${IMG_FILE} to ${DEVICE_WR}"
+  #read dummy_value
+  echo " "
+  echo "Writing to ${DEVICE_WR} starts in 10 seconds"
+  echo " "
+  echo "The following command will be used:"
+  echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
+  sleep 10
 
-echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
-#echo "In case this is not the image you want to be written or"
-#echo "the intended target device please push CTRL-c to stop the process"
-#echo "Otherwise push ENTER to start writing the image file ${IMG_FILE} to ${DEVICE_WR}"
-#read dummy_value
-echo " "
-echo "Writing to ${DEVICE_WR} starts in 10 seconds"
-echo " "
-sleep 10
-
-echo "start at `date`"
-echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
-time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
-sync
+  echo "start at `date`"
+  time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
+  sync
+else
+  echo "ERROR:"
+  echo "The device ${DEVICE_WR}" does not exist."
+  echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
+fi
 echo "finished at `date`"
 

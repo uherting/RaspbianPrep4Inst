@@ -176,3 +176,7 @@ Attention
 * The scripts are to be executed by root due to the nature of mounting / 
   writting to devices. Please be aware of this.
 
+* You might want to turn on the "a" flag of the first partition on the 
+  target device if you write to a SSD. My Raspberry Pi did not want to
+  boot at one point of time as the flag was not set.
+
