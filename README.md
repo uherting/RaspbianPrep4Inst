@@ -81,7 +81,7 @@ Order of execution
 ------------------
 Here are the actions and the commands plus some explanation on the tasks / results.
 
-1) Downloading: "./raspbian_GetLatest.sh <lite|desktop>"
+1) Downloading: "./raspbian_GetLatestAndUnzip.sh <lite|desktop>"
    The latest version of Raspbian will get downloaded to the directory 
    ${IMG_LOCATION_DOWNLOAD} defined in the file mod.conf. The parameter 
    determines whether the lite (no GUI) or desktop version will be downloaded.
@@ -147,7 +147,7 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    supply the <image filename>, too.
 
 Example of a run:
- ./raspbian_GetLatest.sh lite
+ ./raspbian_GetLatestAndUnzip.sh lite
  ./loop_mount_mnt.sh lite
  ./customise_details.sh pizc141 wifi
  ./loop_mount_umnt.sh lite

@@ -26,13 +26,13 @@ echo " "
 echo " "
 
 
-echo "unzip image"
-cd ../ImageEdit
-rm /root/Raspi/ImageEdit/2018-11-13-raspbian-stretch.img
-time unzip ../Downloads/archive/2018-11-13-raspbian-stretch.zip
-cd -
+#echo "unzip image"
+#cd ../ImageEdit
+#rm /root/Raspi/ImageEdit/2018-11-13-raspbian-stretch.img
+#time unzip ../Downloads/archive/2018-11-13-raspbian-stretch.zip
+#cd -
 
-#time ${DNAME}/raspbian_GetLatest.sh ${GIVEN_VERSION}
+time ${DNAME}/raspbian_GetLatestAndUnzip.sh ${GIVEN_VERSION}
 time ${DNAME}/loop_mount_mnt.sh ${GIVEN_VERSION}
 time ${DNAME}/customise_details.sh ${GIVEN_HOSTNAME} ${GIVEN_WIFI_SETTING}
 time ${DNAME}/loop_mount_umnt.sh ${GIVEN_VERSION}
@@ -41,3 +41,4 @@ time ${DNAME}/write_raspbian.sh
 echo " "
 echo " "
 echo " "
+

@@ -64,6 +64,7 @@ echo " "
 sleep 10
 
 echo "start at `date`"
+echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
 time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
 sync
 echo "finished at `date`"
