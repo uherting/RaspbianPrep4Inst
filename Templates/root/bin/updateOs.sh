@@ -1,3 +1,3 @@
 apt update && apt upgrade
-rpi-update
+# not safe enough: rpi-update
 
