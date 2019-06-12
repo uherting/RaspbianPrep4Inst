@@ -38,7 +38,8 @@ then
   then
     if [ -f /boot/cmdline_resize.txt ]; then
       echo "preparing for resizing file system while booting next time." >> /uh.log
-      cat /boot/cmdline_resize.txt > /boot/cmdline.txt 2>&1 >> /uh.log
+      # does not work: cat /boot/cmdline_resize.txt > /boot/cmdline.txt 2>&1 >> /uh.log
+      cat /boot/cmdline_resize.txt > /boot/cmdline.txt | tee -a /uh.log
   
       touch /boot/resized
     else
