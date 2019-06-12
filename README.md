@@ -179,4 +179,7 @@ Attention
 * You might want to turn on the "a" flag of the first partition on the 
   target device if you write to a SSD. My Raspberry Pi did not want to
   boot at one point of time as the flag was not set.
+* The time I wanted to resize the file system on a SSD I had the problem
+  that fdisk showed the new size but df did not. I applied 
+  "resize2fs -d 32 /dev/sda2" and the problem was solved.
 
