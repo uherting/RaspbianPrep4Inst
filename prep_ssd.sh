@@ -44,12 +44,6 @@ SSD_SCRIPT_TPL="${SSD_SCRIPT}.tpl"
 CMDLINE_TXT=""
 LABEL_ID=`tr " " "\n" < ${IMG_LOCATION_MOUNT}/*1/cmdline.txt | grep PARTUUID | cut -f 3 -d "=" | cut -f 1 -d "-"`
 
-if [ $# -eq 1 ]; then
-  ${DNAME}/loop_mount_umnt.sh $1
-else
-  ${DNAME}/loop_mount_umnt.sh $1 $2
-fi
-
 echo "IMG_LOCATION_MOUNT = ${IMG_LOCATION_MOUNT}"
 
 # the file sfd_ssd.script was created by executing ...
@@ -78,8 +72,26 @@ time mkfs.vfat -n"boot" ${SSD_DEV}1
 echo "creating file system on 1st partition of ${SSD_DEV}"
 time mkfs.ext4 -FL"rootfs" ${SSD_DEV}2
 
+echo ""
+echo ""
+echo ""
+echo "Please remove SSD and reattach it. After it is mounted please push the ENTER key."
+read c
+
+echo "copying files onto boot partition"
+rsync -r ${IMG_LOCATION_MOUNT}/*1/* /media/uwe/boot
+
+echo "copying files onto rootfs partition"
+rsync -a ${IMG_LOCATION_MOUNT}/*2/* /media/uwe/rootfs
+
 echo "LABEL_ID used: ${LABEL_ID}"
 echo "DEVICE used: ${SSD_DEV}"
+
+if [ $# -eq 1 ]; then
+  ${DNAME}/loop_mount_umnt.sh $1
+else
+  ${DNAME}/loop_mount_umnt.sh $1 $2
+fi
 
 echo "task finished at `date`"
 
