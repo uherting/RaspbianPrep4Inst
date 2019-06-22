@@ -11,7 +11,7 @@ DNAME=`dirname $0`
 
 if [ $# -lt 3 ]
 then
-  echo "Usage ${BNANE}.sh <lite|desktop> <hostname> <wifi|nowifi>"
+  echo "Usage ${BNAME}.sh <lite|desktop> <hostname> <wifi|nowifi>"
   exit 1
 fi
 

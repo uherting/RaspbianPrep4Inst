@@ -53,6 +53,13 @@ else
 fi
 
 if [ -e ${DEVICE_WR} ]; then
+  # unmount recently inserted card if necessary
+  if [ -e ${DEVICE_WR}p1 ]; then
+    umount ${DEVICE_WR}p1
+  fi
+  if [ -e ${DEVICE_WR}p2 ]; then
+    umount ${DEVICE_WR}p2
+  fi
   echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
   #echo "In case this is not the image you want to be written or"
   #echo "the intended target device please push CTRL-c to stop the process"
@@ -69,9 +76,7 @@ if [ -e ${DEVICE_WR} ]; then
   time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
   sync
 else
-  echo "ERROR:"
-  echo "The device ${DEVICE_WR}" does not exist."
-  echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
+  echo "ERROR: the device ${DEVICE_WR} does not exist."
 fi
 echo "finished at `date`"
 

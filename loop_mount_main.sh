@@ -38,6 +38,12 @@ then
   exit 1
 fi
 
+if [ $# -gt 2 ]
+then
+  echo "Usage: more than two parameters are not allowed."
+  exit 1
+fi
+
 VERSION=""
 if [ "${GIVEN_VERSION}" == "lite" ]; then
   VERSION="-lite"
@@ -45,12 +51,6 @@ fi
 
 if [ "${GIVEN_VERSION}" == "desktop" ]; then
   VERSION=""
-fi
-
-if [ $# -gt 2 ]
-then
-  echo "Usage: more than one parameter is not allowed."
-  exit 1
 fi
 
 # check if given file exist 
@@ -95,7 +95,8 @@ then
 
   # mount the img file on the next available loop device and assign the name of the device to a variable
   echo "The image file will be mounted on the following loop device:"
-  dev="$(sudo losetup --show -f -P "$img")"
+  # connecting the image file to a loop device and 
+  dev="$(losetup --show -f -P "$img")"
   echo "$dev"
 
   # loop through the partitions contained in the img file and mount them to ${IMG_LOCATION_MOUNT}/<partition_name>
@@ -103,12 +104,15 @@ then
   for part in "$dev"?*
   do
     if [ "$part" == "${dev}p*" ]; then
+ echo "part $part == dev..."
       part="${dev}"
     fi
     dst="${IMG_LOCATION_MOUNT}/$(basename "$part")"
+    #echo "partition: $part"
+    #echo "mount point: $dst"
     echo "$dst"
-    sudo mkdir -p "$dst"
-    sudo mount "$part" "$dst"
+    mkdir -p "$dst"
+    mount "$part" "$dst"
   done
 fi
 
@@ -118,13 +122,14 @@ if [ "${BNAME}" == "loop_mount_umnt" ]
 then
   echo "Using image file ${IMG_FILE} for loop unmounting."
 
+  # get resolved symbolic link or canonical file name
   img=`readlink -f ${IMG_FILE}`
   #echo "The given file name of the image points to ${img}. If this is not correct please push CTRL-c."
   #echo "Otherwise push ENTER to continue."
   #read dummy_value
 
   # define the loop device
-  dev="`sudo losetup -l | grep ${img} | cut -f1 -d\" \"`"
+  dev="`losetup -l | grep ${img} | cut -f1 -d\" \"`"
 
   # loop through the partitions presented through the loop dev and unmount them
   for part in "$dev"?*
@@ -133,10 +138,11 @@ then
       part="${dev}"
     fi
     dst="${IMG_LOCATION_MOUNT}/$(basename "$part")"
-    sudo umount "$dst"
+    umount "$dst"
   done
+
   # detach loop device from img file
-  sudo losetup -d "$dev"
+  losetup -d "$dev"
 
   # delete mount point directories
   rm -rf ${IMG_LOCATION_MOUNT}/*
@@ -160,8 +166,8 @@ fi
 # /youhave
 # /there
 #
-# 2) proof of mounting activity by using "sudo losetup -l"
-# $ sudo losetup -l
+# 2) proof of mounting activity by using "losetup -l"
+# $ losetup -l
 # NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE  DIO
 # /dev/loop1         0      0         0  0 /full/path/to/my.img
 #
