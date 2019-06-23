@@ -93,6 +93,13 @@ else
   ${DNAME}/loop_mount_umnt.sh $1 $2
 fi
 
+echo "unmounting SSD partitions of ${SSD_DEV}"
+for i in `mount | grep ${SSD_DEV} | cut -f 1 -d " "`
+do
+  echo "unmount ${i}"
+  umount ${i}
+done
+
 echo "task finished at `date`"
 
 
