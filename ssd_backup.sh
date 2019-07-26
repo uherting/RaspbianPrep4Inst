@@ -72,20 +72,13 @@ if [ ${SSD_MOUNTED} -eq 1 ] ; then
 fi
 
 
-echo " "
-echo " "
-echo "task w/ virt error finished at `date`"
+echo "unmounting SSD partitions of ${SSD_DEV}"
+for i in `mount | grep ${SSD_DEV} | cut -f 1 -d " "`
+do
+  echo "unmount ${i}"
+  umount ${i}
+done
 
-exit 99 
-
-if [ ${SSD_MOUNTED} -eq 1 ] ; then
-  echo "unmounting SSD partitions of ${SSD_DEV}"
-  for i in `mount | grep ${SSD_DEV} | cut -f 1 -d " "`
-  do
-    echo "unmount ${i}"
-    umount ${i}
-  done
-fi
 echo "task finished at `date`"
 
 
