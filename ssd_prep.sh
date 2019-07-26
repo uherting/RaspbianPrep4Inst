@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This scripts writes the latest image file to the SD card.
+# This scripts writes the latest image file to the SSD.
 # The latest image is determined by the date/time stamp given in the file name.
 
 if [ "`whoami`" != "root" ]
