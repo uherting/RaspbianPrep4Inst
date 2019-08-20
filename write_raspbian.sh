@@ -16,25 +16,29 @@ DNAME=`dirname $0`
 
 if [ $# -gt 2 ]
 then
-  echo "Usage: ${BNAME}.sh <image_file> <target_device>"
-  echo "       More than two parameters are not allowed."
+  echo "Usage: ${BNAME}.sh <write_image_yn> <image_file> <target_device>"
+  echo "       Parameter <write_image_yn>: either 'y' or 'n'. Allows / permits writing to SD card"
+  echo "       More than three parameters are not allowed."
   echo "       Both parameters are optional."
   echo "       If you want to supply the <target_device> then you have to supply the <image_file>, too."
   exit 1
 fi
 
-if [ $# -eq 2 ]
-then
-  DEVICE_WR=$2
+WRITE_IMG=0
+if [ "$1" == "y" ]; then
+  WRITE_IMG=1
+if
+
+if [ $# -eq 3 ]; then
+  DEVICE_WR=$3
 fi
 
 
 # check if given file exist 
 # if no file name was given try to take the latest
 # according to the timestamp in file in the directory ${IMG_LOCATION_EDIT}
-if [ $# -eq 1 ]
-then
-  IMG_FILE=$1
+if [ $# -eq 2 ]; then
+  IMG_FILE=$2
 
   if [ ! -f ${IMG_FILE} ]
   then
@@ -60,21 +64,24 @@ if [ -e ${DEVICE_WR} ]; then
   if [ -e ${DEVICE_WR}p2 ]; then
     umount ${DEVICE_WR}p2
   fi
-  echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
-  #echo "In case this is not the image you want to be written or"
-  #echo "the intended target device please push CTRL-c to stop the process"
-  #echo "Otherwise push ENTER to start writing the image file ${IMG_FILE} to ${DEVICE_WR}"
-  #read dummy_value
-  echo " "
-  echo "Writing to ${DEVICE_WR} starts in 10 seconds"
-  echo " "
-  echo "The following command will be used:"
-  echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
-  sleep 10
 
-  echo "start at `date`"
-  time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
-  sync
+  if [ ${WRITE_IMG} -eq 0 } ]; then
+    echo "No writing to the SD card takes place as requested by parameter #1."
+  else
+    echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
+    echo " "
+    echo "Writing to ${DEVICE_WR} starts in 10 seconds"
+    echo " "
+    echo "The following command will be used:"
+    echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
+
+    sleep 10 
+
+    echo "start at `date`"
+
+    time dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress
+    sync
+  fi
 else
   echo "ERROR: the device ${DEVICE_WR} does not exist."
 fi
