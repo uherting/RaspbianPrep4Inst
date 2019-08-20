@@ -130,11 +130,14 @@ Here are the actions and the commands plus some explanation on the tasks / resul
    in the directory ${IMG_LOCATION_EDIT}). If an image file name is given
    it will be used instead.
 
-5) Writing the image to the SD card: "./write_raspbian.sh <image filename> <SD card device>"
+5) Writing the image to the SD card: 
+   "./write_raspbian.sh <write_image_yn> <image filename> <SD card device>"
 
    This script writes an image file to the SD card. The parameters 
    are optional.
 
+   Parameter <write_image_yn>: either 'y' or 'n'. Allows / permits writing to SD card.
+   
    This writes the latest image file (according to the timestamp in file
    in the directory ${IMG_LOCATION_EDIT}) or the image file given on 
    command line.
@@ -151,7 +154,7 @@ Example of a run:
  ./loop_mount_mnt.sh lite
  ./customise_details.sh pizc141 wifi
  ./loop_mount_umnt.sh lite
- ./write_raspbian.sh 
+ ./write_raspbian.sh y
 
 Additional Customisation
 ------------------------
