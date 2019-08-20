@@ -47,8 +47,9 @@ LABEL_ID=`tr " " "\n" < ${IMG_LOCATION_MOUNT}/*1/cmdline.txt | grep PARTUUID | c
 echo "IMG_LOCATION_MOUNT = ${IMG_LOCATION_MOUNT}"
 
 # the file sfd_ssd.script was created by executing ...
-# sfdisk --dump /dev/sdb > sfd_ssd.script
+# sfdisk --dump /dev/sdb > sfd_ssd.script 
 # and replacing the label-id / device name with 'LABEL_ID' / 'DEVICE'
+# sfd_ssd.script is stored in the variable SSD_SCRIPT above
 
 # creating sfd_ssd.script with the correct label-id
 echo "creating sfdisk script ${SSD_SCRIPT} from template file ${SSD_SCRIPT_TPL}"
