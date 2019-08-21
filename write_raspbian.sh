@@ -64,6 +64,8 @@ if [ -e ${DEVICE_WR} ]; then
   # write at all?
   if [ ${WRITE_IMG} -eq 0 ]; then
     echo "No writing to the SD card takes place as requested by parameter #1."
+    echo "The following command would have been used:"
+    echo "dd bs=4M if=${IMG_FILE} of=${DEVICE_WR} status=progress"
   else
     echo "${IMG_FILE} gets written to SD card at ${DEVICE_WR}"
     echo " "
