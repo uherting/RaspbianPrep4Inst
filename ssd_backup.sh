@@ -16,7 +16,7 @@ if [ $# -gt 0 ]; then
   echo " "
   echo " "
   echo "Error: no parameters expected"
-  echo "Usage: ${BNAME}.sh <hostname>"
+  echo "Usage: ${BNAME}.sh"
   exit 1
 fi
 
