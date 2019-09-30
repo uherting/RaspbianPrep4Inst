@@ -11,7 +11,7 @@ DNAME=`dirname $0`
 
 if [ $# -lt 4 ]
 then
-  echo "Usage ${BNAME}.sh <lite|desktop> <hostname> <wifi|nowifi> "
+  echo "Usage ${BNAME}.sh <write_image_yn> <lite|desktop> <hostname> <wifi|nowifi> "
   echo ""
   echo "Parameter <write_image_yn>: either 'y' or 'n'. Allows / permits writing to SD card"
   exit 1
